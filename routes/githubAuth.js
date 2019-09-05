@@ -1,4 +1,5 @@
 const axios = require("axios");
+const querystring = require('querystring');
 
 const UserModel = require("../models/UserModel");
 const CommentaryModel = require("../models/CommentaryModel");
@@ -11,7 +12,16 @@ const REDIRECT_CALLBACK_URI = `${HOST}/login/github/callback`;
 
 // nossa porta de entrada =]
 module.exports.login = async (req, res) => {
-	res.redirect(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${new Date()}`);
+	const params = querystring.stringify({
+		client_id: GITHUB_CLIENT_ID,
+		redirect_uri: REDIRECT_CALLBACK_URI,
+		scope: "user:email",
+		state: new Date().toISOString()
+	});
+
+	const url = "https://github.com/login/oauth/authorize?" + params;
+
+	res.redirect(url);
 };
 
 // github ira nos chamar por aqui [=

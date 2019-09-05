@@ -13,13 +13,12 @@ import CommentTextBox from "../components/CommentTextBox";
 
 const Home = (props) => {
 
-	const currentUser = props.data ? new Author(props.data.displayName, props.data.avatarURL, props.data.profileURL) : undefined;
+	const currentUser = new Author(props.data.displayName, props.data.avatarURL, props.data.profileURL);
 	const [commentsState, setComments] = useState(props.comments || []);
 
 	function handlePostCommentary(text) {
 		if (text.trim()) {
-			const date = new Date();
-			const timestamp = `Hoje às ${date.getHours()}:${date.getMinutes()}`;
+			const timestamp = new Date();
 			const newComment = new Commentary(currentUser, text, timestamp);
 
 			axios.post("/send/comment", {
