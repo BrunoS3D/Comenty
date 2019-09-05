@@ -12,16 +12,7 @@ const REDIRECT_CALLBACK_URI = `${HOST}/login/github/callback`;
 
 // nossa porta de entrada =]
 module.exports.login = async (req, res) => {
-	const params = querystring.stringify({
-		client_id: GITHUB_CLIENT_ID,
-		redirect_uri: REDIRECT_CALLBACK_URI,
-		scope: "user:email",
-		state: new Date().toISOString()
-	});
-
-	const url = "https://github.com/login/oauth/authorize?" + params;
-
-	res.redirect(url);
+	res.redirect(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${new Date()}`);
 };
 
 // github ira nos chamar por aqui [=
