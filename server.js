@@ -9,16 +9,16 @@ const githubAuth = require("./routes/githubAuth");
 
 const CommentaryModel = require("./models/CommentaryModel");
 
-const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
-const handle = app.getRequestHandler();
-
 
 // Heroku Config
 
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI;
+const DEV = process.env.NODE_ENV !== "production";
 
+
+const app = next({ dev: DEV });
+const handle = app.getRequestHandler();
 
 mongoose.connect(MONGODB_URI, {
 	useNewUrlParser: true
