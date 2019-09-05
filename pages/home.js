@@ -1,0 +1,58 @@
+import axios from "axios";
+import React, { useState } from "react";
+
+import Head from "next/head";
+
+import style from "../styles/App";
+
+import Author from "../api/Author";
+import Commentary from "../api/Commentary";
+
+import CommentList from "../components/CommentList";
+import CommentTextBox from "../components/CommentTextBox";
+
+const Home = (props) => {
+
+	const currentUser = props.data ? new Author(props.data.displayName, props.data.avatarURL, props.data.profileURL) : undefined;
+	const [commentsState, setComments] = useState(props.comments || []);
+
+	function handlePostCommentary(text) {
+		if (text.trim()) {
+			const date = new Date();
+			const timestamp = `Hoje às ${date.getHours()}:${date.getMinutes()}`;
+			const newComment = new Commentary(currentUser, text, timestamp);
+
+			axios.post("/send/comment", {
+				comment: text,
+				userID: props.data.userID
+			}).then(() => {
+				setComments([...commentsState, newComment]);
+			});
+		}
+	}
+
+	return (
+		<div className="home-container">
+			<Head>
+				<title>Home</title>
+			</Head>
+
+			{currentUser ? (
+				<div>
+					<CommentTextBox currentUser={currentUser} handleSubmit={handlePostCommentary} />
+					<CommentList comments={commentsState} />
+				</div>
+			) : (
+					<h1>Realize o login</h1>
+				)}
+
+			<style jsx>{style}</style>
+		</div>
+	);
+}
+
+Home.getInitialProps = ({ query }) => {
+	return { ...query };
+};
+
+export default Home;
