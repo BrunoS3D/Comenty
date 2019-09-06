@@ -120,7 +120,16 @@ module.exports.verifySession = async (app, req, res) => {
 			const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
 			const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
+
 			console.log("========================", "pass 2", user_response.data.name, "========================");
+
+			const userDB = await UserModel.findOne({ id: user_response.data.id });
+
+			if (!userDB) {
+				console.error(`Falha ao encontrar usuário: ID:${id}, login:${login}, details:`, error);
+				res.clearCookie("COMENTY_SESSION");
+				return app.render(req, res, "/login", req.query);
+			}
 
 			const USERDATA = {
 				token: ACCESS_TOKEN,
@@ -159,15 +168,15 @@ module.exports.verifySession = async (app, req, res) => {
 
 			console.log("========================", "pass 4", comments, "========================");
 
-			return app.render(req, res, "/home", { data: USERDATA, comments })
+			return app.render(req, res, "/home", { data: USERDATA, comments });
 		}
 		catch (error) {
 			console.error("========================", "pass 5 ERROR", error, "========================");
-			return app.render(req, res, "/login", req.query)
+			return app.render(req, res, "/login", req.query);
 		}
 	}
 	else {
 		console.log("========================", "pass 7", "========================");
-		return app.render(req, res, "/login", req.query)
+		return app.render(req, res, "/login", req.query);
 	}
 };
