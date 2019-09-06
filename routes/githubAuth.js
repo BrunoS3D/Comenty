@@ -141,10 +141,15 @@ module.exports.verifySession = async (app, req, res) => {
 			await asyncForEach(commentsDB, async (commentDB) => {
 				const authorDB = await UserModel.findOne({ id: commentDB.userID });
 
-				const author = { name: authorDB.displayName || authorDB.login, avatarURL: authorDB.avatarURL, url: authorDB.profileURL }
-				const comment = { author, text: commentDB.comment, timestamp: commentDB.createdAt };
+				if (authorDB) {
+					const author = { name: authorDB.displayName || authorDB.login, avatarURL: authorDB.avatarURL, url: authorDB.profileURL }
+					const comment = { author, text: commentDB.comment, timestamp: commentDB.createdAt };
 
-				comments.push(comment);
+					comments.push(comment);
+				} else {
+					throw new Error(`Usuário não encontrado: ${commentDB.userID}`);
+					// console.error("========================", "pass 5 ERROR", "========================");
+				}
 			});
 
 			console.log("========================", "pass 4", comments, "========================");
