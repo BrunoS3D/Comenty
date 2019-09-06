@@ -26,6 +26,8 @@ const Home = (props) => {
 				userID: props.data.userID
 			}).then(() => {
 				setComments([...commentsState, newComment]);
+				// scrollbar.scrollTop();
+				window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
 			});
 		}
 	}
