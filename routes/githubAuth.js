@@ -23,13 +23,13 @@ module.exports.login = async (req, res) => {
 	const token = generateToken();
 
 	states.push(token);
-	res.redirect(`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${token}`);
+	res.redirect(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${token}`);
 };
 
 // github ira nos chamar por aqui [=
 module.exports.callback = async (req, res) => {
 
-	const tokenIndex = states.indexOf(req.query.state)
+	const tokenIndex = states.indexOf(req.query.state);
 
 	if (tokenIndex > -1) {
 		states.splice(tokenIndex, 1);
