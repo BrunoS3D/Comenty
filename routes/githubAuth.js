@@ -1,5 +1,4 @@
 const axios = require("axios");
-const querystring = require('querystring');
 
 const UserModel = require("../models/UserModel");
 const CommentaryModel = require("../models/CommentaryModel");
@@ -10,13 +9,33 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const REDIRECT_CALLBACK_URI = `${HOST}/login/github/callback`;
 
+let states = [];
+
 // nossa porta de entrada =]
 module.exports.login = async (req, res) => {
-	res.redirect(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${new Date()}`);
+	const rand = () => {
+		return Math.random().toString(36).substr(2);
+	};
+	const generateToken = () => {
+		return rand() + rand();
+	};
+
+	const token = generateToken();
+
+	states.push(token);
+	res.redirect(`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${token}`);
 };
 
 // github ira nos chamar por aqui [=
 module.exports.callback = async (req, res) => {
+
+	const tokenIndex = states.indexOf(req.query.state)
+
+	if (tokenIndex > -1) {
+		states.splice(tokenIndex, 1);
+		// states = states.filter(e => e !== req.query.state);
+		return res.redirect("/login");
+	}
 
 	const params = {
 		client_id: GITHUB_CLIENT_ID,
