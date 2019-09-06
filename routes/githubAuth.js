@@ -62,11 +62,9 @@ module.exports.callback = async (req, res) => {
 
 	console.log("***************************", "pass 7", ACCESS_TOKEN, "***************************")
 
-	const OAuthRequestConfig = {
-		headers: {
-			"Authorization": "token " + ACCESS_TOKEN
-		}
-	};
+	const AuthStr = "Bearer ".concat(ACCESS_TOKEN);
+
+	const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
 
 	const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
@@ -74,7 +72,7 @@ module.exports.callback = async (req, res) => {
 
 	console.log("***************************", "pass 8", user_response.data, "***************************")
 
-	const userExists = await UserModel.findOne({ email });
+	const userExists = await UserModel.findOne({ $or: [{ id }, { email }] });
 
 	const cookieData = {
 		email,

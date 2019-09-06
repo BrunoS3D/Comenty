@@ -13,7 +13,7 @@ import CommentTextBox from "../components/CommentTextBox";
 
 const Home = (props) => {
 
-	const currentUser = new Author(props.data.displayName, props.data.avatarURL, props.data.profileURL);
+	const currentUser = new Author(props.data.displayName || props.data.login, props.data.avatarURL, props.data.profileURL);
 	const [commentsState, setComments] = useState(props.comments || []);
 
 	function handlePostCommentary(text) {
