@@ -35,11 +35,13 @@ module.exports.callback = async (req, res) => {
 	const tokenIndex = states.indexOf(req.query.state);
 
 	console.log("***************************", "pass 4", tokenIndex, "***************************")
-	if (tokenIndex > -1) {
+	if (tokenIndex < 0) {
 		console.log("***************************", "pass 5", req.query.state, "***************************")
+		return res.redirect("/login");
+	}
+	else {
 		states.splice(tokenIndex, 1);
 		// states = states.filter(e => e !== req.query.state);
-		return res.redirect("/login");
 	}
 
 	const params = {
