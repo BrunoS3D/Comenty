@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
+import moment from "moment";
 
 import style from "../styles/Comment";
 import avatar from "../styles/Avatar";
 
 export default function Comment(props) {
+
+	moment.locale("pt-BR");
+	const timestamp = moment(props.comment.timestamp).fromNow();;
+
 	return (
 		<div className="comment-container">
 			<header className="author-container">
@@ -11,7 +16,7 @@ export default function Comment(props) {
 				<a className="author-name" href={props.comment.author.url}>
 					{props.comment.author.name}
 				</a>
-				<span className="comment-timestamp">{props.comment.timestamp.toString().substring(0, 10)}</span>
+				<span className="comment-timestamp">{timestamp}</span>
 			</header>
 			<footer>
 				<p className="comment-text">
