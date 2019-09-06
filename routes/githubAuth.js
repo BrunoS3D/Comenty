@@ -40,9 +40,11 @@ module.exports.callback = async (req, res) => {
 		return res.redirect("/login");
 	}
 	else {
+		console.log("***************************", "pass 6a", states.length, "***************************")
+
 		states.splice(tokenIndex, 1);
 
-		console.log("***************************", "pass 6", states.length, "***************************")
+		console.log("***************************", "pass 6b", states.length, "***************************")
 		// states = states.filter(e => e !== req.query.state);
 	}
 
@@ -74,6 +76,8 @@ module.exports.callback = async (req, res) => {
 
 	const userExists = await UserModel.findOne({ $or: [{ id }, { email }] });
 
+	console.log("***************************", "pass 9", userExists, "***************************")
+
 	const cookieData = {
 		email,
 		ACCESS_TOKEN
@@ -82,7 +86,7 @@ module.exports.callback = async (req, res) => {
 	res.cookie("COMENTY_SESSION", cookieData, { maxAge: 24 * 60 * 60 * 1000 });
 
 	if (!userExists) {
-		console.log("***************************", "pass 9", email, "***************************")
+		console.log("***************************", "pass 10", email, "***************************")
 
 		const dev = await UserModel.create({
 			email,
@@ -101,15 +105,17 @@ module.exports.callback = async (req, res) => {
 module.exports.verifySession = async (app, req, res) => {
 	const cookie = req.cookies.COMENTY_SESSION;
 
+	console.log("========================", "pass 1", "========================");
 	if (cookie && cookie.ACCESS_TOKEN) {
-		// console.log("pass 1");
 		try {
+			console.log("========================", "pass 2", "========================");
+
 			const ACCESS_TOKEN = cookie.ACCESS_TOKEN;
 			const AuthStr = "Bearer ".concat(ACCESS_TOKEN);
 			const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
 			const github = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
-			// console.log("pass 2", github.data.name);
+			console.log("========================", "pass 2", github.data.name, "========================");
 
 			const USERDATA = {
 				token: ACCESS_TOKEN,
@@ -122,7 +128,7 @@ module.exports.verifySession = async (app, req, res) => {
 
 			const commentsDB = await CommentaryModel.find({});
 
-			// console.log("pass 3", commentsDB);
+			console.log("========================", "pass 3", commentsDB, "========================");
 
 			let comments = [];
 
@@ -141,15 +147,17 @@ module.exports.verifySession = async (app, req, res) => {
 				comments.push(comment);
 			});
 
-			// console.log("pass 4", comments);
+			console.log("========================", "pass 4", comments, "========================");
 
 			return app.render(req, res, "/home", { data: USERDATA, comments })
 		}
-		catch {
+		catch (error) {
+			console.error("========================", "pass 5 ERROR", error, "========================");
 			return app.render(req, res, "/login", req.query)
 		}
 	}
 	else {
+		console.log("========================", "pass 7", "========================");
 		return app.render(req, res, "/login", req.query)
 	}
 };
