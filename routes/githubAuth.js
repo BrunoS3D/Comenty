@@ -13,6 +13,7 @@ let states = [];
 
 // nossa porta de entrada =]
 module.exports.login = async (req, res) => {
+	console.log("***************************", "pass 1", "***************************")
 	const rand = () => {
 		return Math.random().toString(36).substr(2);
 	};
@@ -21,6 +22,7 @@ module.exports.login = async (req, res) => {
 	};
 
 	const token = generateToken();
+	console.log("***************************", "pass 2", token, "***************************")
 
 	states.push(token);
 	res.redirect(`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${REDIRECT_CALLBACK_URI}&scope=user:email&state=${token}`);
@@ -28,10 +30,13 @@ module.exports.login = async (req, res) => {
 
 // github ira nos chamar por aqui [=
 module.exports.callback = async (req, res) => {
+	console.log("***************************", "pass 3", "***************************")
 
 	const tokenIndex = states.indexOf(req.query.state);
 
+	console.log("***************************", "pass 4", tokenIndex, "***************************")
 	if (tokenIndex > -1) {
+		console.log("***************************", "pass 5", req.query.state, "***************************")
 		states.splice(tokenIndex, 1);
 		// states = states.filter(e => e !== req.query.state);
 		return res.redirect("/login");
