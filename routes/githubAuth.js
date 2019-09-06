@@ -68,7 +68,7 @@ module.exports.callback = async (req, res) => {
 
 	const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
-	const { email, id, login: username, name: displayName, html_url, avatar_url } = user_response.data;
+	const { email, id, login, name: displayName, html_url, avatar_url } = user_response.data;
 
 	console.log("***************************", "pass 8", user_response.data, "***************************")
 
@@ -87,7 +87,7 @@ module.exports.callback = async (req, res) => {
 		const dev = await UserModel.create({
 			email,
 			id,
-			username,
+			login,
 			displayName,
 			profileURL: html_url,
 			avatarURL: avatar_url,
@@ -134,10 +134,6 @@ module.exports.verifySession = async (app, req, res) => {
 
 			await asyncForEach(commentsDB, async (commentDB) => {
 				const authorDB = await UserModel.findOne({ id: commentDB.userID });
-
-				console.log("DISPLAY NAME", authorDB.displayName);
-				console.log("LOGIN", authorDB.login);
-				console.log("DN || L", authorDB.displayName || authorDB.login);
 
 				const author = { name: authorDB.displayName || authorDB.login, avatarURL: authorDB.avatarURL, url: authorDB.profileURL }
 				const comment = { author, text: commentDB.comment, timestamp: commentDB.createdAt };
