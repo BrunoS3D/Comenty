@@ -88,14 +88,19 @@ module.exports.callback = async (req, res) => {
 	if (!userExists) {
 		console.log("***************************", "pass 10", email, "***************************")
 
-		const dev = await UserModel.create({
-			email,
-			id,
-			login,
-			displayName,
-			profileURL: html_url,
-			avatarURL: avatar_url,
-		});
+		try {
+			const dev = await UserModel.create({
+				email,
+				id,
+				login,
+				displayName,
+				profileURL: html_url,
+				avatarURL: avatar_url,
+			});
+		}
+		catch (error) {
+			console.error(`Usuário não criado: ID:${id}, login:${login}, details:`, error);
+		}
 	}
 
 	res.redirect("/home");
@@ -147,8 +152,8 @@ module.exports.verifySession = async (app, req, res) => {
 
 					comments.push(comment);
 				} else {
-					throw new Error(`Usuário não encontrado: ${commentDB.userID}`);
-					// console.error("========================", "pass 5 ERROR", "========================");
+					// throw new Error();
+					console.error(`Usuário não encontrado: ${commentDB.userID}`);
 				}
 			});
 
