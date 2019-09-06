@@ -47,7 +47,7 @@ const Home = (props) => {
 					<h1>Realize o login</h1>
 				)}
 
-			<style jsx global>{style}</style>
+			<style jsx>{style}</style>
 		</div>
 	);
 }
