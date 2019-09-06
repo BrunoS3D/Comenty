@@ -99,7 +99,7 @@ module.exports.callback = async (req, res) => {
 			});
 		}
 		catch (error) {
-			console.error(`Usuário não criado: ID:${id}, login:${login}, details:`, error);
+			console.error(`Falha ao criar novo usuário: ID:${id}, login:${login}, details:`, error);
 		}
 	}
 
@@ -118,17 +118,17 @@ module.exports.verifySession = async (app, req, res) => {
 			const ACCESS_TOKEN = cookie.ACCESS_TOKEN;
 			const AuthStr = "Bearer ".concat(ACCESS_TOKEN);
 			const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
-			const github = await axios.get("https://api.github.com/user", OAuthRequestConfig);
+			const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
-			console.log("========================", "pass 2", github.data.name, "========================");
+			console.log("========================", "pass 2", user_response.data.name, "========================");
 
 			const USERDATA = {
 				token: ACCESS_TOKEN,
-				userID: github.data.id,
-				login: github.data.login,
-				displayName: github.data.name,
-				avatarURL: github.data.avatar_url,
-				profileURL: github.data.html_url
+				userID: user_response.data.id,
+				login: user_response.data.login,
+				displayName: user_response.data.name,
+				avatarURL: user_response.data.avatar_url,
+				profileURL: user_response.data.html_url
 			};
 
 			const commentsDB = await CommentaryModel.find({});
@@ -151,9 +151,28 @@ module.exports.verifySession = async (app, req, res) => {
 					const comment = { author, text: commentDB.comment, timestamp: commentDB.createdAt };
 
 					comments.push(comment);
-				} else {
-					// throw new Error();
+				}
+				else {
 					console.error(`Usuário não encontrado: ${commentDB.userID}`);
+					console.log("========================", "Tentando criar novo usuário", comments, "========================");
+
+					const { email, id, login, name: displayName, html_url, avatar_url } = user_response.data;
+
+					try {
+						const dev = await UserModel.create({
+							email,
+							id,
+							login,
+							displayName,
+							profileURL: html_url,
+							avatarURL: avatar_url,
+						});
+
+						res.redirect("/home");
+					}
+					catch (error) {
+						console.error(`Falha ao criar novo usuário: ID:${id}, login:${login}, details:`, error);
+					}
 				}
 			});
 
