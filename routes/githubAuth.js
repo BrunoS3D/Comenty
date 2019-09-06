@@ -72,7 +72,7 @@ module.exports.callback = async (req, res) => {
 
 	const { email, id, login: username, name: displayName, html_url, avatar_url } = user_response.data;
 
-	console.log("***************************", "pass 8", email, "***************************")
+	console.log("***************************", "pass 8", user_response.data, "***************************")
 
 	const userExists = await UserModel.findOne({ email });
 
