@@ -41,6 +41,8 @@ module.exports.callback = async (req, res) => {
 	}
 	else {
 		states.splice(tokenIndex, 1);
+
+		console.log("***************************", "pass 6", states.length, "***************************")
 		// states = states.filter(e => e !== req.query.state);
 	}
 
@@ -58,6 +60,8 @@ module.exports.callback = async (req, res) => {
 
 	const ACCESS_TOKEN = urlParams.get("access_token");
 
+	console.log("***************************", "pass 7", ACCESS_TOKEN, "***************************")
+
 	const AuthStr = "Bearer ".concat(ACCESS_TOKEN);
 
 	const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
@@ -65,6 +69,8 @@ module.exports.callback = async (req, res) => {
 	const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
 	const { email, id, login: username, name: displayName, html_url, avatar_url } = user_response.data;
+
+	console.log("***************************", "pass 8", email, "***************************")
 
 	const userExists = await UserModel.findOne({ email });
 
@@ -76,6 +82,8 @@ module.exports.callback = async (req, res) => {
 	res.cookie("COMENTY_SESSION", cookieData, { maxAge: 24 * 60 * 60 * 1000 });
 
 	if (!userExists) {
+		console.log("***************************", "pass 9", email, "***************************")
+
 		const dev = await UserModel.create({
 			email,
 			id,
