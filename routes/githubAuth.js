@@ -74,7 +74,7 @@ module.exports.callback = async (req, res) => {
 
 	console.log("***************************", "pass 8", user_response.data, "***************************")
 
-	const userExists = await UserModel.findOne({ $or: [{ id }, { email }] });
+	const userExists = await UserModel.findOne({ id });
 
 	console.log("***************************", "pass 9", userExists, "***************************")
 
