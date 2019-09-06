@@ -135,6 +135,10 @@ module.exports.verifySession = async (app, req, res) => {
 			await asyncForEach(commentsDB, async (commentDB) => {
 				const authorDB = await UserModel.findOne({ id: commentDB.userID });
 
+				console.log("DISPLAY NAME", authorDB.displayName);
+				console.log("LOGIN", authorDB.login);
+				console.log("DN || L", authorDB.displayName || authorDB.login);
+
 				const author = { name: authorDB.displayName || authorDB.login, avatarURL: authorDB.avatarURL, url: authorDB.profileURL }
 				const comment = { author, text: commentDB.comment, timestamp: commentDB.createdAt };
 
