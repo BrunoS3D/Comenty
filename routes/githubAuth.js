@@ -62,9 +62,11 @@ module.exports.callback = async (req, res) => {
 
 	console.log("***************************", "pass 7", ACCESS_TOKEN, "***************************")
 
-	const AuthStr = "Bearer ".concat(ACCESS_TOKEN);
-
-	const OAuthRequestConfig = { headers: { Authorization: AuthStr } };
+	const OAuthRequestConfig = {
+		headers: {
+			"Authorization": "token " + ACCESS_TOKEN
+		}
+	};
 
 	const user_response = await axios.get("https://api.github.com/user", OAuthRequestConfig);
 
