@@ -154,27 +154,6 @@ module.exports.verifySession = async (app, req, res) => {
 				}
 				else {
 					console.error(`Usuário não encontrado: ${commentDB.userID}`);
-					console.log("========================", "Tentando criar novo usuário", comments, "========================");
-
-					if (user_response.data) {
-						const { email, id, login, name: displayName, html_url, avatar_url } = user_response.data;
-
-						try {
-							const dev = await UserModel.create({
-								email,
-								id,
-								login,
-								displayName,
-								profileURL: html_url,
-								avatarURL: avatar_url,
-							});
-
-							return res.redirect("/home");
-						}
-						catch (error) {
-							console.error(`Falha ao criar novo usuário: ID:${id}, login:${login}, details:`, error);
-						}
-					}
 				}
 			});
 
